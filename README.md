@@ -1,9 +1,7 @@
 # certguard
 
-Get alerted when potential phishing domains similar to your organization's
-have SSL certificates created.
+Get alerted in Microsoft Teams when potential phishing domains similar to 
+your organization's have SSL certificates created.
 
-## Blog post coming soon
-
-# See https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
-# https://developers.facebook.com/docs/graph-api/webhooks/getting-started#create-endpoint
+## Documentation
+See the step-by-step blog post here: https://b1tst0rm.net/2019/06/11/certguard.html
