@@ -11,9 +11,7 @@ TEAMS_CARD = """
     "@type": "MessageCard",
     "themeColor": "FF0000",
     "title": "Alert: Potentially Malicious Domain Discovered!",
-    "text": "Facebook Certificate Transparency Monitoring System has detected
-             a new SSL certificate issued for what looks to be an
-             illegitimate domain similar to ",
+    "text": "Facebook Certificate Transparency Monitoring System has detected a new SSL certificate issued for what looks to be an illegitimate domain similar to ",
     "sections": [
         {
             "startGroup": true,
@@ -30,13 +28,11 @@ TEAMS_CARD = """
             "potentialAction": [
                 {
                     "@type": "OpenUri",
-                    "name": "Learn more about Facebook Certificate
-                             Transparency",
+                    "name": "Learn more about Facebook Certificate Transparency",
                     "targets": [
                         {
                             "os": "default",
-                            "uri": "https://developers.facebook.com/docs/
-                                    certificate-transparency/"
+                            "uri": "https://developers.facebook.com/docs/certificate-transparency/"
                         }
                     ]
                 }
