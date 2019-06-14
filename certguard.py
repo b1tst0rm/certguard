@@ -69,35 +69,27 @@ def lambda_handler(event, context):
     elif (event['httpMethod'] == 'POST'):
         # Fetch the JSON body from Facebook
         body = json.loads(event['body'])
-
-        json_teams = json.loads(TEAMS_CARD)
-
+        
         try:
-            logger.info('API POST (inside try)')
-
             # If more than one alert in the payload
             changes_value = body['entry'][0]['changes'][0]['value']
             domains = changes_value['phishing_domains']
             original_domain = changes_value['phished_domain']
-
-            card_to_send = json.loads(TEAMS_CARD)
-            card_to_send['text'] += '**' + original_domain + '**'
-
+            
             for domain in domains:
-                card_to_send['sections'][0]['title'] = '**' + domain + '**'
-                card_to_send['sections'][0]['facts'][0]['value'] =
-                datetime.utcfromtimestamp(
+                time = datetime.utcfromtimestamp(
                     int(body['entry'][0]['time'])
                 ).strftime('%Y-%m-%d %H:%M:%S') + " UTC"
-                json_teams_str = json.dumps(card_to_send)
-                r = requests.post(TEAMS_ENDPOINT, data=json_teams_str)
+                relay_alert(original_domain, domain, time)
 
         except KeyError:
             # If just one alert in the body
-            logger.info('API POST KeyError')
-            json_teams['text'] = body['value']['phishing_domains'][0]
-
-        json_teams_str = json.dumps(json_teams)
+            mal_domain = body['value']['phishing_domains'][0]
+            original_domain = body['value']['phished_domain']
+            time = datetime.utcfromtimestamp(
+                int(body['time'])
+            ).strftime('%Y-%m-%d %H:%M:%S') + " UTC"
+            relay_alert(original_domain, mal_domain, time)
 
         return {
             'statusCode': 200,
@@ -109,3 +101,15 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': 'Invalid HTTP Method'
         }
+
+def relay_alert(orig_domain, mal_domain, time):
+    """
+    Given the original domain, malicious/phishing domain, and time of
+    occurrence, sends an alert to Teams endpoint using a formatted Card.
+    """
+    card_to_send = json.loads(TEAMS_CARD)
+    card_to_send['text'] += '**' + orig_domain + '**'
+    card_to_send['sections'][0]['title'] = '**' + mal_domain + '**'
+    card_to_send['sections'][0]['facts'][0]['value'] = time
+    json_teams_str = json.dumps(card_to_send)
+    r = requests.post(TEAMS_ENDPOINT, data=json_teams_str)
